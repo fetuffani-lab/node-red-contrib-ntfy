@@ -1,0 +1,187 @@
+<script type="text/html" data-template-name="ntfy">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-serverConfig"><i class="fa fa-cog"></i> Server Config</label>
+        <input type="text" id="node-input-serverConfig">
+    </div>
+    <hr/>
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-bullhorn"></i> Topic</label>
+        <input type="text" id="node-input-topic" placeholder="your_topic_name (or msg.topic)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-message"><i class="fa fa-envelope"></i> Message</label>
+        <input type="text" id="node-input-message" placeholder="Notification body (or msg.payload)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-title"><i class="fa fa-header"></i> Title (optional)</label>
+        <input type="text" id="node-input-title" placeholder="msg.title or string">
+    </div>
+    <div class="form-row">
+        <label for="node-input-priority"><i class="fa fa-exclamation-triangle"></i> Priority</label>
+        <select id="node-input-priority" style="width:70%;">
+            <option value="">(msg.priority)</option>
+            <option value="1">Min (1)</option>
+            <option value="2">Low (2)</option>
+            <option value="3">Default (3)</option>
+            <option value="4">High (4)</option>
+            <option value="5">Max (5)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-tags"><i class="fa fa-tags"></i> Tags (optional)</label>
+        <input type="text" id="node-input-tags" placeholder="warning,skull (msg.tags or comma-separated)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-icon"><i class="fa fa-image"></i> Icon URL (optional)</label>
+        <input type="text" id="node-input-icon" placeholder="URL to an icon (or msg.icon)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-click"><i class="fa fa-mouse-pointer"></i> Click URL (optional)</label>
+        <input type="text" id="node-input-click" placeholder="URL to open on click (or msg.click)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-attach"><i class="fa fa-paperclip"></i> Attach URL (optional)</label>
+        <input type="text" id="node-input-attach" placeholder="URL of attachment (or msg.attach)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-filename"><i class="fa fa-file-o"></i> Filename (optional)</label>
+        <input type="text" id="node-input-filename" placeholder="Filename for attachment (or msg.filename)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-actions"><i class="fa fa-tasks"></i> Actions (optional)</label>
+        <textarea id="node-input-actions" rows="3" placeholder="e.g., view, Open, https://example.com (or msg.actions as string/array)"></textarea>
+        <span class="form-tips">One action per line, or a JSON array via <code>msg.actions</code>. See ntfy docs for format.</span>
+    </div>
+    <div class="form-row">
+        <label for="node-input-email"><i class="fa fa-at"></i> Email (optional)</label>
+        <input type="text" id="node-input-email" placeholder="Email address to notify (or msg.email)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay (optional)</label>
+        <input type="text" id="node-input-delay" placeholder="e.g., 5min, 1h (or msg.delay)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-cache"><i class="fa fa-database"></i> Cache</label>
+        <select id="node-input-cache" style="width:70%;"><option value="">(msg.cache)</option><option value="yes">Yes</option><option value="no">No</option></select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-firebase"><i class="fa fa-mobile"></i> Firebase</label>
+        <select id="node-input-firebase" style="width:70%;"><option value="">(msg.firebase)</option><option value="yes">Yes</option><option value="no">No</option></select>
+    </div>
+    <hr/>
+    <div class="form-row">
+        <label>&nbsp;</label>
+        <input type="checkbox" id="node-input-insecure" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-insecure" style="width: 70%;"> Allow insecure HTTPS (skip certificate verification)</label>
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('ntfy', {
+        category: 'network',
+        color: '#5eead4',
+        defaults: {
+            name: {value: ""},
+            serverConfig: {value: "", type: "ntfy-credentials", required: true},
+            topic: {value: ""},
+            priority: {value: ""},
+            title: {value: ""},
+            message: {value: ""},
+            tags: {value: ""},
+            icon: {value: ""},
+            click: {value: ""},
+            attach: {value: ""},
+            filename: {value: ""},
+            actions: {value: ""},
+            email: {value: ""},
+            delay: {value: ""},
+            cache: {value: ""},
+            firebase: {value: ""},
+            insecure: {value: false}
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "ntfy.svg",
+        paletteLabel: "ntfy",
+        label: function() {
+            return this.name || "ntfy: " + (this.topic || (this.serverConfigNode ? this.serverConfigNode.server : "untitled"));
+        },
+        oneditprepare: function() {
+            // $("#node-input-topic").typedInput({default: 'str', types: ['str','msg','flow','global'], typeField: "#node-input-topicType"});
+        }
+    });
+</script>
+
+<script type="text/html" data-help-name="ntfy">
+    <p>Sends a notification via an Ntfy server. <img src="ntfy.svg" style="height:30px; vertical-align:middle; margin-left:10px;"/></p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">payload <span class="property-type">string</span></dt>
+        <dd>The main message content. If not set, the configured <b>Message</b> will be used.</dd>
+        <dt class="optional">topic <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Topic</b>.</dd>
+        <dt class="optional">title <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Title</b>.</dd>
+        <dt class="optional">priority <span class="property-type">number | string</span></dt>
+        <dd>Overrides the configured <b>Priority</b> (1-5).</dd>
+        <dt class="optional">tags <span class="property-type">string | array</span></dt>
+        <dd>Overrides the configured <b>Tags</b>. Can be a comma-separated string or an array of strings (emojis supported, e.g., <code>warning,skull</code>).</dd>
+        <dt class="optional">icon <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Icon URL</b>.</dd>
+        <dt class="optional">click <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Click URL</b>.</dd>
+        <dt class="optional">attach <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Attach URL</b>. URL of a remote file to attach.</dd>
+        <dt class="optional">filename <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Filename</b>. Sets the filename for the attachment.</dd>
+        <dt class="optional">actions <span class="property-type">string | array</span></dt>
+        <dd>Overrides the configured <b>Actions</b>. Can be a multi-line string (one action per line) or an array of action objects/strings.
+            Each action string follows the ntfy format: <code>&lt;type&gt;, &lt;label&gt;, &lt;url&gt; [, clear=true/false] [, method=POST, headers={}, body={}]</code>.
+            Example: <code>view, Open Docs, https://docs.ntfy.sh</code>.
+            If an array of objects is provided, each object should have <code>type</code>, <code>label</code>, <code>url</code>, and optional <code>clear</code>, <code>method</code>, <code>headers</code>, <code>body</code> properties. The node will attempt to format this into the ntfy string.
+        </dd>
+        <dt class="optional">email <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Email</b>. If set, ntfy will attempt to forward the notification to this email address.</dd>
+        <dt class="optional">delay <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Delay</b>. Delays message delivery (e.g., <code>5min</code>, <code>1h</code>, <code>2 hours</code>).</dd>
+        <dt class="optional">cache <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Cache</b> setting (<code>yes</code> or <code>no</code>).</dd>
+        <dt class="optional">firebase <span class="property-type">string</span></dt>
+        <dd>Overrides the configured <b>Firebase</b> setting (<code>yes</code> or <code>no</code>).</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This node sends messages to a specified Ntfy topic. Configure the Ntfy server details using the <b>Server Config</b> field, which points to an <code>ntfy-credentials</code> configuration node.</p>
+    <h4>Configuration Fields:</h4>
+    <ul>
+        <li><b>Server Config</b>: Select your Ntfy server configuration.</li>
+        <li><b>Topic</b>: The Ntfy topic to publish to (e.g., <code>my_alerts</code>). Required.</li>
+        <li><b>Message</b>: Default message content if <code>msg.payload</code> is not provided.</li>
+        <li><b>Title</b>: Notification title.</li>
+        <li><b>Priority</b>: Notification priority (1=min, 2=low, 3=default, 4=high, 5=max).</li>
+        <li><b>Tags</b>: Comma-separated list of tags or emojis.</li>
+        <li><b>Icon URL</b>: URL of an image to use as the notification icon.</li>
+        <li><b>Click URL</b>: URL to open when the notification is clicked.</li>
+        <li><b>Attach URL</b>: URL of a remote file to attach to the notification. Ntfy will download and attach it.</li>
+        <li><b>Filename</b>: Custom filename for the attachment specified by Attach URL.</li>
+        <li><b>Actions</b>: Define custom notification actions. Enter one action per line in the format: <code>type, label, url [, extra_params]</code>.
+            Refer to the <a href="https://docs.ntfy.sh/publish/#action-buttons" target="_blank">Ntfy Actions Documentation</a> for detailed syntax.
+            Example: <code>view, Open Website, https://example.com, clear=true</code></li>
+        <li><b>Email</b>: Email address to forward the notification to.</li>
+        <li><b>Delay</b>: Schedule message delivery (e.g., <code>10m</code>, <code>1h30min</code>).</li>
+        <li><b>Cache</b>: Set to <code>no</code> to prevent the message from being cached by the ntfy server.</li>
+        <li><b>Firebase</b>: Set to <code>no</code> to prevent the message from being sent via Firebase Cloud Messaging (FCM).</li>
+        <li><b>Allow insecure HTTPS</b>: If checked, SSL certificate errors will be ignored when connecting to an HTTPS ntfy server. Use with caution.</li>
+    </ul>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https://ntfy.sh/" target="_blank">Ntfy Website</a> - Official ntfy project page.</li>
+        <li><a href="https://docs.ntfy.sh/publish/" target="_blank">Ntfy Publishing Docs</a> - Detailed information on all headers and options.</li>
+    </ul>
+</script>

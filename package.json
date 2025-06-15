@@ -1,0 +1,29 @@
+{
+	"name": "node-red-contrib-ntfy",
+	"version": "0.1.0",
+	"description": "A Node-RED node to send notifications via Ntfy.",
+	"dependencies": {
+		"node-fetch": "^2.6.7"
+	},
+	"keywords": [
+		"node-red",
+		"ntfy",
+		"notification"
+	],
+	"node-red": {
+		"nodes": {
+			"ntfy": "ntfy.js",
+			"ntfy-credentials": "ntfy-credentials.js"
+		}
+	},
+	"license": "Apache-2.0",
+	"author": "Felipe Tuffani",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fetuffani-lab/node-red-contrib-ntfy.git"
+	},
+	"bugs": {
+		"url": "https://github.com/fetuffani-lab/node-red-contrib-ntfy/issues"
+	},
+	"homepage": "https://github.com/fetuffani-lab/node-red-contrib-ntfy#readme"
+}
