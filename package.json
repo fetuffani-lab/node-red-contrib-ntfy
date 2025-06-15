@@ -16,6 +16,15 @@
 			"ntfy-credentials": "ntfy-credentials.js"
 		}
 	},
+	"files": [
+		"ntfy.js",
+		"ntfy.html",
+		"ntfy-credentials.js",
+		"ntfy-credentials.html",
+		"ntfy.svg",
+		"README.md",
+		"LICENSE"
+	],
 	"license": "Apache-2.0",
 	"author": "Felipe Tuffani",
 	"repository": {
